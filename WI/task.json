@@ -1,0 +1,37 @@
+{
+ "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+ "id": "85329e2f-f38c-4702-9dbc-368c9a459a92",
+ "name": "SecOpsWI",
+ "friendlyName": "SecOps WI",
+ "description": "SecOps WI",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "category": "Utility",
+
+  "inputs": [
+ 
+    {
+      "name": "connection",
+      "type": "connectedService:generic",
+      "label": "SonarQube Service Endpoint",
+      "required": true,
+      "helpMarkDown": "Select the SonarQube Server Endpoint."
+    },
+	{
+      "name": "ADOConnection",
+      "type": "connectedService:externaltfs",
+      "label": "ADOConnection Server Endpoint",
+      "required": true,
+      "helpMarkDown": "Select the ADOConnection server endpoint for your project. To create one, click the Manage link and create a new ADOConnection Server Endpoint, enter your server url and token."
+    }
+	 
+ ],
+ "execution": {
+     "Node": {
+         "target": "index.js"
+     }
+ }
+ }

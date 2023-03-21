@@ -1,0 +1,36 @@
+{
+    "manifestVersion": 1,
+    "id": "WorkItem-task",
+    "name": "secopsWI",
+    "version": "0.0.1",
+    "publisher": "vasanthan297",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "Security WorkItem Initialize.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"        
+    },
+    "files": [
+        {
+            "path": "WI"
+        }
+    ],
+  "contributions": [
+    {
+      "id": "WI",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+                "name": "WI"
+            }
+    }
+  ]
+}
