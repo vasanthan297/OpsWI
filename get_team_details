@@ -1,0 +1,19 @@
+from azure.devops.connection import Connection
+from msrest.authentication import BasicAuthentication
+# Replace the URL, PAT, and project name with your own values
+organization_url = 'https://dev.azure.com/'
+personal_access_token = 
+project_name = 'Sai'
+
+
+credentials = BasicAuthentication('', personal_access_token)
+connection = Connection(base_url=organization_url, creds=credentials)
+core_client = connection.clients.get_core_client()
+
+
+team_members = core_client.get_team_members_with_extended_properties(project_name, team_name)
+# Print the team members
+for member in team_members:
+    print("Display Name:", member.identity.display_name)
+    print("ID:", member.identity.id)
+    print("Descriptor:", member.identity.descriptor)
