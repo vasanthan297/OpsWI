@@ -23,3 +23,35 @@ https.get(url, options, (response: https.IncomingMessage) => {
   fs.unlink(filePath, () => {});
   console.error(`Error downloading file: ${err}`);
 });
+
+
+
+
+
+import axios from 'axios';
+import fs from 'fs';
+
+const downloadFile = async (url: string, username: string, password: string, outputPath: string) => {
+  try {
+    const response = await axios.get(url, {
+      responseType: 'stream',
+      auth: {
+        username: username,
+        password: password
+      }
+    });
+
+    const writeStream = fs.createWriteStream(outputPath);
+    response.data.pipe(writeStream);
+
+    return new Promise((resolve, reject) => {
+      writeStream.on('finish', resolve);
+      writeStream.on('error', reject);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Example usage:
+downloadFile('http://example.com/file.ext', 'username', 'password', './output/filename.ext');
