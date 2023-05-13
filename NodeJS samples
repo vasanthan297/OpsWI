@@ -25,33 +25,17 @@ https.get(url, options, (response: https.IncomingMessage) => {
 });
 
 
-
-
-
-import axios from 'axios';
 import fs from 'fs';
+import unzipper from 'unzip-stream';
 
-const downloadFile = async (url: string, username: string, password: string, outputPath: string) => {
-  try {
-    const response = await axios.get(url, {
-      responseType: 'stream',
-      auth: {
-        username: username,
-        password: password
-      }
-    });
+const fileReadStream = fs.createReadStream('file.zip');
+const extractDirectory = 'extracted';
 
-    const writeStream = fs.createWriteStream(outputPath);
-    response.data.pipe(writeStream);
-
-    return new Promise((resolve, reject) => {
-      writeStream.on('finish', resolve);
-      writeStream.on('error', reject);
-    });
-  } catch (error) {
+fileReadStream.pipe(unzipper.Extract({ path: extractDirectory }))
+  .on('close', () => {
+    console.log('File extracted successfully.');
+  })
+  .on('error', error => {
     console.error(error);
-  }
-};
+  });
 
-// Example usage:
-downloadFile('http://example.com/file.ext', 'username', 'password', './output/filename.ext');
