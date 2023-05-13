@@ -39,3 +39,45 @@ fileReadStream.pipe(unzipper.Extract({ path: extractDirectory }))
     console.error(error);
   });
 
+
+
+
+npm install csv-parse csvtojson json2html
+
+
+import fs from 'fs';
+import csvParse from 'csv-parse';
+import csvToJson from 'csvtojson';
+import json2html from 'json2html';
+
+const csvFilePath = 'data.csv';
+const htmlFilePath = 'table.html';
+
+fs.readFile(csvFilePath, (error, fileData) => {
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  csvParse(fileData, { delimiter: ',' }, (parseError, csvData) => {
+    if (parseError) {
+      console.error(parseError);
+      return;
+    }
+
+    csvToJson()
+      .fromString(csvData.join('\n'))
+      .then(jsonData => {
+        const htmlTable = json2html.render(jsonData);
+        fs.writeFile(htmlFilePath, htmlTable, error => {
+          if (error) {
+            console.error(error);
+            return;
+          }
+          console.log(`CSV file converted to HTML table and saved to ${htmlFilePath}`);
+        });
+      });
+  });
+});
+
+
