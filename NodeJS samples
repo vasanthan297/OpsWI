@@ -81,3 +81,31 @@ fs.readFile(csvFilePath, (error, fileData) => {
 });
 
 
+
+
+import https from 'https';
+import fs from 'fs';
+
+const username = 'myusername';
+const password = 'mypassword';
+const options = {
+  auth: `${username}:${password}`,
+};
+
+https.get('https://example.com/myZipFile.zip', options, (res) => {
+  const filename = 'myZipFile.zip';
+  const fileStream = fs.createWriteStream(filename);
+  res.pipe(fileStream);
+
+  fileStream.on('finish', () => {
+    console.log(`${filename} downloaded successfully`);
+  });
+
+  fileStream.on('error', (err) => {
+    console.error(`Error while writing to ${filename}: ${err}`);
+  });
+}).on('error', (err) => {
+  console.error(`Error while downloading ${filename}: ${err}`);
+});
+
+
