@@ -137,3 +137,35 @@ https.get(url, options, (res) => {
   res.pipe(fs.createWriteStream('file.zip'));
 });
 
+
+
+
+
+
+npm install node-fetch --save
+
+
+import fetch from 'node-fetch';
+import * as fs from 'fs';
+
+const url = 'https://example.com/file.zip';
+const username = 'your-username';
+const password = 'your-password';
+
+const options = {
+  headers: {
+    Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
+  },
+};
+
+fetch(url, options)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const dest = fs.createWriteStream('file.zip');
+    response.body.pipe(dest);
+  })
+  .catch(error => {
+    console.error(error.message);
+  });
