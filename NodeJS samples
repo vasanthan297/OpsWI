@@ -169,3 +169,57 @@ fetch(url, options)
   .catch(error => {
     console.error(error.message);
   });
+  
+  
+  
+  
+  
+  
+  
+  import fetch from 'node-fetch';
+import * as fs from 'fs';
+import * as unzipper from 'unzipper';
+
+const url = 'https://example.com/file.zip';
+const username = 'your-username';
+const password = 'your-password';
+const zipFilePath = 'file.zip';
+const extractDir = './extracted';
+
+async function downloadAndExtract() {
+  const options = {
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`,
+    },
+  };
+
+  const response = await fetch(url, options);
+
+  if (!response || !response.ok) {
+    throw new Error(`HTTP error ${response?.status}`);
+  }
+
+  const dest = fs.createWriteStream(zipFilePath);
+  await new Promise<void>((resolve, reject) => {
+    response.body.pipe(dest)
+      .on('finish', () => {
+        console.log('Download complete!');
+        resolve();
+      })
+      .on('error', error => {
+        reject(error);
+      });
+  });
+
+  await fs.createReadStream(zipFilePath)
+    .pipe(unzipper.Extract({ path: extractDir }))
+    .on('close', () => {
+      console.log('Extraction complete!');
+    });
+}
+
+downloadAndExtract()
+  .catch(error => {
+    console.error(error.message);
+  });
+
