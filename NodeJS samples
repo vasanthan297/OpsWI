@@ -109,3 +109,31 @@ https.get('https://example.com/myZipFile.zip', options, (res) => {
 });
 
 
+
+
+
+
+
+import https from 'https';
+import fs from 'fs';
+
+const url = 'https://example.com/file.zip';
+const username = 'your_username';
+const password = 'your_password';
+
+const options = {
+  auth: `${username}:${password}`,
+};
+
+https.get(url, options, (res) => {
+  const { statusCode } = res;
+
+  if (statusCode !== 200) {
+    console.error(`Failed to download file: ${statusCode}`);
+    res.resume();
+    return;
+  }
+
+  res.pipe(fs.createWriteStream('file.zip'));
+});
+
