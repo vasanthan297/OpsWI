@@ -223,3 +223,33 @@ downloadAndExtract()
     console.error(error.message);
   });
 
+
+
+
+import fs from 'fs';
+
+const directoryPath = './my-directory';
+
+fs.mkdir(directoryPath, { recursive: true }, (error) => {
+  if (error) {
+    console.error('Error creating directory:', error);
+  } else {
+    console.log('Directory created successfully!');
+  }
+});
+
+npm install fs-extra
+
+import fs from 'fs-extra';
+
+const directoryPath = './my-directory';
+
+fs.remove(directoryPath)
+  .then(() => {
+    console.log('Directory removed successfully!');
+  })
+  .catch((error) => {
+    console.error('Error removing directory:', error);
+  });
+
+
