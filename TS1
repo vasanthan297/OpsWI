@@ -1,0 +1,36 @@
+async function createDir() {
+  let path: string = 'C:/Periyava/Yogi/TS/ex1/sonar/'
+
+
+  fs.stat(path, (err, stats) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        console.log(' SAI Directory does not exist.');
+        
+        fs.mkdir(path, { recursive: true }, (err) => {
+          if (err) {
+            console.error('An error occurred:', err);
+          } else {
+            console.log('Directory created successfully.');
+          }
+        });
+      } 
+    } else {
+      if (stats.isDirectory()) {
+        fs.rmdir(path, { recursive: true }, (err) => {
+          if (err) {
+            console.error('An error occurred:', err);
+          } else {
+            console.log('Directory removed successfully.');
+            fs.mkdir(path, { recursive: true }, (err) => {
+              if (err) {
+                console.error('An error occurred:', err);
+              } else {
+                console.log('Directory created successfully.');
+              }
+            });
+          }
+        });
+      }}  
+    });
+} 
