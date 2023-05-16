@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Job'
+    steps:
+    - script: echo 'Building the application...'
+      displayName: 'Build'
+
+- stage: Deploy
+  jobs:
+  - job: DeployJob
+    displayName: 'Deploy Job'
+    steps:
+    - script: echo 'Deploying the application...'
+      displayName: 'Deploy'
+
+- stage: ManualValidation
+  displayName: 'Manual Validation'
+  jobs:
+  - job: ManualApprovalJob
+    displayName: 'Manual Approval Job'
+    steps:
+    - task: ManualIntervention@1
+      inputs:
+        instructions: 'Please review and approve the deployment.'
+        timeoutInMinutes: 1440
+      displayName: 'Manual Intervention'
