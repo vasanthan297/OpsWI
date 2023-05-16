@@ -34,3 +34,30 @@ async function createDir() {
       }}  
     });
 } 
+
+
+
+import { exec } from 'child_process';
+
+async function synDir() {
+  const createDirCommand = 'mkdir C:/Periyava/Yogi/TS/ex1/sonar/';
+  const removeDirCommand = 'rm -rf C:/Periyava/Yogi/TS/ex1/sonar/';
+  // Create directory
+    exec(createDirCommand, (error, stdout, stderr) => {
+  if (error) {
+    console.error('An error occurred while creating the directory:', error);
+  } else {
+    console.log('Directory created successfully.');
+  }
+  });
+
+// Remove directory
+   exec(removeDirCommand, (error, stdout, stderr) => {
+  if (error) {
+    console.error('An error occurred while removing the directory:', error);
+  } else {
+    console.log('Directory removed successfully.');
+  }
+ });
+  
+}
