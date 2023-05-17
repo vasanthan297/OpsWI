@@ -1,0 +1,29 @@
+import * as azdev from "azure-devops-node-api";
+
+async function getModifiedFilePaths() {
+  try {
+    // Azure DevOps organization URL and PAT (Personal Access Token)
+    const organizationUrl = "https://dev.azure.com/your_organization";
+    const personalAccessToken = "your_personal_access_token";
+
+    // Create a connection to Azure DevOps
+    const authHandler = azdev.getPersonalAccessTokenHandler(personalAccessToken);
+    const connection = new azdev.WebApi(organizationUrl, authHandler);
+
+    // Get the environment variables
+    const repositoryId = process.env.SYSTEM_PULLREQUEST_TARGETREPOSITORYID;
+    const pullRequestId = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
+
+    // Get the Git API client
+    const gitApi = await connection.getGitApi();
+
+    // Get the pull request details
+    const pullRequest = await gitApi.getPullRequestById(repositoryId, pullRequestId);
+
+    // Get the modified file details
+    const pullRequestChanges = await gitApi.getPullRequestChanges(repositoryId, pullRequestId);
+    const modifiedFilePaths = pullRequestChanges.changes.map((change) => change.item.path);
+
+    console.log("Pull Request ID:", pullRequest.pullRequestId);
+    console.log("Modified File Paths:", modifiedFilePaths);
+  } catch (err) {
