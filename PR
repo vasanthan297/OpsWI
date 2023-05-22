@@ -37,3 +37,35 @@
       print("Modified Files:")
       for file in modified_files:
           print(file)
+          
+          
+          
+        import jsonschema
+import json
+import toml
+
+def validate_toml_against_json(toml_file, json_pattern_file):
+    # Load TOML data
+    with open(toml_file) as f:
+        toml_data = toml.load(f)
+
+    # Load JSON pattern
+    with open(json_pattern_file) as f:
+        json_pattern = json.load(f)
+
+    # Validate TOML against JSON pattern
+    jsonschema.validate(toml_data, json_pattern)
+
+    print("Validation successful!")
+
+# Specify the TOML file and JSON pattern file paths
+toml_file = "data.toml"
+json_pattern_file = "pattern.json"
+
+# Validate the TOML file against the JSON pattern
+validate_toml_against_json(toml_file, json_pattern_file)
+
+
+
+pip install toml jsonschema
+
