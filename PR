@@ -1,29 +1,39 @@
-import * as azdev from "azure-devops-node-api";
+- task: PythonScript@0
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      import requests
+      import os
+      
+      def get_modified_files(pr_id):
+          base_url = os.environ['SYSTEM_TEAMFOUNDATIONCOLLECTIONURI']
+          project = os.environ['SYSTEM_TEAMPROJECT']
+          repository_id = os.environ['BUILD_REPOSITORY_ID']
+          access_token = '$(System.AccessToken)'
+          print('repository_id',repository_id)
+          #print('access_token',access_token)
 
-async function getModifiedFilePaths() {
-  try {
-    // Azure DevOps organization URL and PAT (Personal Access Token)
-    const organizationUrl = "https://dev.azure.com/your_organization";
-    const personalAccessToken = "your_personal_access_token";
-
-    // Create a connection to Azure DevOps
-    const authHandler = azdev.getPersonalAccessTokenHandler(personalAccessToken);
-    const connection = new azdev.WebApi(organizationUrl, authHandler);
-
-    // Get the environment variables
-    const repositoryId = process.env.SYSTEM_PULLREQUEST_TARGETREPOSITORYID;
-    const pullRequestId = process.env.SYSTEM_PULLREQUEST_PULLREQUESTID;
-
-    // Get the Git API client
-    const gitApi = await connection.getGitApi();
-
-    // Get the pull request details
-    const pullRequest = await gitApi.getPullRequestById(repositoryId, pullRequestId);
-
-    // Get the modified file details
-    const pullRequestChanges = await gitApi.getPullRequestChanges(repositoryId, pullRequestId);
-    const modifiedFilePaths = pullRequestChanges.changes.map((change) => change.item.path);
-
-    console.log("Pull Request ID:", pullRequest.pullRequestId);
-    console.log("Modified File Paths:", modifiedFilePaths);
-  } catch (err) {
+          #url = f'{base_url}{project}/_apis/git/repositories/{repository_id}/pullRequests/{pr_id}/changes?api-version=6.0'
+          url = "$(System.CollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=7.0"
+        
+          headers = {
+              'Authorization': f'Bearer {access_token}'
+          }
+          print('url',url)
+          
+          response = requests.get(url, headers=headers)
+          print('response',response)
+          response.raise_for_status()
+          
+          modified_files = response.json()['changes']
+          file_paths = [file['item']['path'] for file in modified_files]
+          
+          return file_paths
+      
+      # Usage example
+      pr_id = os.environ['BUILD_SOURCEVERSION']
+      modified_files = get_modified_files(pr_id)
+      
+      print("Modified Files:")
+      for file in modified_files:
+          print(file)
