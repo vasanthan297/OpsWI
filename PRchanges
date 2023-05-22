@@ -1,0 +1,39 @@
+- task: PythonScript@0
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      import requests
+      import os
+      
+      def get_modified_files(pr_id):
+          base_url = os.environ['SYSTEM_TEAMFOUNDATIONCOLLECTIONURI']
+          project = os.environ['SYSTEM_TEAMPROJECT']
+          repository_id = os.environ['BUILD_REPOSITORY_ID']
+          access_token = '$(System.AccessToken)'
+          print('repository_id',repository_id)
+          #print('access_token',access_token)
+
+          #url = f'{base_url}{project}/_apis/git/repositories/{repository_id}/pullRequests/{pr_id}/changes?api-version=6.0'
+          url = "$(System.CollectionUri)$(System.TeamProject)/_apis/git/repositories/$(Build.Repository.ID)/commits/$(Build.SourceVersion)/changes?api-version=7.0"
+        
+          headers = {
+              'Authorization': f'Bearer {access_token}'
+          }
+          print('url',url)
+          
+          response = requests.get(url, headers=headers)
+          print('response',response)
+          response.raise_for_status()
+          
+          modified_files = response.json()['changes']
+          file_paths = [file['item']['path'] for file in modified_files]
+          
+          return file_paths
+      
+      # Usage example
+      pr_id = os.environ['BUILD_SOURCEVERSION']
+      modified_files = get_modified_files(pr_id)
+      
+      print("Modified Files:")
+      for file in modified_files:
+          print(file)
