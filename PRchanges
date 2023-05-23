@@ -37,3 +37,12 @@
       print("Modified Files:")
       for file in modified_files:
           print(file)
+
+
+pattern = re.compile(r'your_regex_pattern')
+for key, value in data.items():
+    if isinstance(value, str):
+        matches = pattern.findall(value)
+        if matches:
+            print(f"Key: {key}, Matches: {matches}")
+
