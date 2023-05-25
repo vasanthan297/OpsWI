@@ -69,3 +69,17 @@ validate_toml_against_json(toml_file, json_pattern_file)
 
 pip install toml jsonschema
 
+
+
+trigger:
+  branches:
+    include:
+      - '*'
+  paths:
+    exclude:
+      - '**'
+  pr:
+    branches:
+      include:
+        - '*'
+
