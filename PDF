@@ -1,57 +1,44 @@
-https://www.npmjs.com/package/pdf2html
-npm install pdfjs-dist
-
 
 npm install pdfjs-dist
+npm install @types/pdfjs-dist
+
+
 import * as fs from 'fs';
-import * as pdfjsLib from 'pdfjs-dist';
+import { PDFDocumentProxy } from 'pdfjs-dist';
 
-async function convertPdfToHtml(inputPath: string, outputPath: string): Promise<void> {
-  // Read PDF file
-  const pdfData = new Uint8Array(fs.readFileSync(inputPath));
+// Function to convert PDF to HTML
+async function convertPDFToHTML(pdfPath: string): Promise<string> {
+  // Read the PDF file
+  const data = new Uint8Array(fs.readFileSync(pdfPath));
 
-  // Load PDF document
-  const doc = await pdfjsLib.getDocument({ data: pdfData }).promise;
+  // Load the PDF document
+  const pdf = await PDFDocumentProxy.load(data);
 
   // Convert each page to HTML
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum);
+  const htmlPages = await Promise.all(
+    Array.from({ length: pdf.numPages }, (_, index) =>
+      pdf.getPage(index + 1).then(page => page.getTextContent())
+    )
+  );
 
-    // Set viewport for rendering
-    const viewport = page.getViewport({ scale: 1.0 });
+  // Convert text content to HTML
+  const html = htmlPages.map(page =>
+    page.items
+      .map(item => `<span style="left:${item.transform[4]}px; top:${item.transform[5]}px;">${item.str}</span>`)
+      .join('')
+  ).join('<br>');
 
-    // Prepare canvas for rendering
-    const canvasFactory = new pdfjsLib.DOMCanvasFactory();
-    const canvas = canvasFactory.create(
-      viewport.width,
-      viewport.height
-    ) as HTMLCanvasElement;
-    const canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    // Render PDF page to canvas
-    const renderContext = {
-      canvasContext,
-      viewport,
-      canvasFactory,
-    };
-    await page.render(renderContext).promise;
-
-    // Extract HTML content from the canvas
-    const htmlContent = canvas.toDataURL('image/png');
-
-    // Save HTML content to file
-    fs.writeFileSync(`${outputPath}-${pageNum}.html`, htmlContent, 'utf-8');
-  }
-
-  console.log('HTML conversion successful.');
+  return html;
 }
 
-// Specify the input PDF file path
-const inputPdfPath = 'input.pdf';
-
-// Specify the output HTML file path
-const outputHtmlPath = 'output';
-
-// Convert PDF to HTML
-convertPdfToHtml(inputPdfPath, outputHtmlPath);
-
+// Usage
+const pdfPath = 'path/to/input.pdf';
+convertPDFToHTML(pdfPath)
+  .then(html => {
+    // HTML conversion completed
+    console.log(html);
+    // Do something with the HTML
+  })
+  .catch(error => {
+    console.error('Error converting PDF to HTML:', error);
+  });
