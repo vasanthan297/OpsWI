@@ -1,0 +1,23 @@
+npm install puppeteer typescript ts-node
+import puppeteer from 'puppeteer';
+
+async function convertPDFToHTML(pdfPath: string, htmlPath: string): Promise<void> {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.goto(`file://${pdfPath}`);
+
+  const htmlContent = await page.content();
+
+  const fs = require('fs');
+  fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+
+  await browser.close();
+
+  console.log(`PDF converted to HTML and saved at: ${htmlPath}`);
+}
+
+// Usage:
+const pdfPath = '/path/to/input.pdf';
+const htmlPath = '/path/to/output.html';
+convertPDFToHTML(pdfPath, htmlPath);
