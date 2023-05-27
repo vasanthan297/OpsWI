@@ -1,23 +1,57 @@
 
-npm install pdf2html
+npm install pdfjs-dist
 
-import * as pdf2html from 'pdf2html';
 
-function convertPdfToHtml(inputPath: string, outputPath: string): void {
-  pdf2html.convert(inputPath, outputPath, (err, result) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log('HTML conversion successful.');
-  });
+npm install pdfjs-dist
+import * as fs from 'fs';
+import * as pdfjsLib from 'pdfjs-dist';
+
+async function convertPdfToHtml(inputPath: string, outputPath: string): Promise<void> {
+  // Read PDF file
+  const pdfData = new Uint8Array(fs.readFileSync(inputPath));
+
+  // Load PDF document
+  const doc = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+  // Convert each page to HTML
+  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+    const page = await doc.getPage(pageNum);
+
+    // Set viewport for rendering
+    const viewport = page.getViewport({ scale: 1.0 });
+
+    // Prepare canvas for rendering
+    const canvasFactory = new pdfjsLib.DOMCanvasFactory();
+    const canvas = canvasFactory.create(
+      viewport.width,
+      viewport.height
+    ) as HTMLCanvasElement;
+    const canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    // Render PDF page to canvas
+    const renderContext = {
+      canvasContext,
+      viewport,
+      canvasFactory,
+    };
+    await page.render(renderContext).promise;
+
+    // Extract HTML content from the canvas
+    const htmlContent = canvas.toDataURL('image/png');
+
+    // Save HTML content to file
+    fs.writeFileSync(`${outputPath}-${pageNum}.html`, htmlContent, 'utf-8');
+  }
+
+  console.log('HTML conversion successful.');
 }
 
 // Specify the input PDF file path
 const inputPdfPath = 'input.pdf';
 
 // Specify the output HTML file path
-const outputHtmlPath = 'output.html';
+const outputHtmlPath = 'output';
 
 // Convert PDF to HTML
 convertPdfToHtml(inputPdfPath, outputHtmlPath);
+
