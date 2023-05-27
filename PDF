@@ -49,3 +49,62 @@ convertPDFToHTML(pdfPath)
   });
 
 
+
+
+
+
+
+
+
+
+
+
+
+import * as fs from 'fs';
+import { PDFPageProxy, PDFPromise } from 'pdfjs-dist';
+
+// Load the PDF worker from pdfjs-dist/build/pdf.worker.entry
+import * as pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import { PDFDocumentProxy, PDFDocumentLoadingTask } from 'pdfjs-dist/build/pdf';
+
+// Register the PDF worker
+const pdfWorker = pdfjsWorker();
+const pdfjsLib = (window as any).pdfjsLib;
+
+// Function to convert PDF to HTML
+async function convertPDFToHTML(pdfPath: string): Promise<string> {
+  // Read the PDF file
+  const data = new Uint8Array(fs.readFileSync(pdfPath));
+
+  // Load the PDF document
+  const loadingTask: PDFDocumentLoadingTask<PDFDocumentProxy> = pdfjsLib.getDocument({ data });
+  const pdf: PDFDocumentProxy = await loadingTask.promise;
+
+  // Convert each page to HTML
+  const htmlPages: Array<string> = await Promise.all(
+    Array.from({ length: pdf.numPages }, async (_, index) => {
+      const page: PDFPageProxy = await pdf.getPage(index + 1);
+      const content: any = await page.getTextContent();
+      return content.items
+        .map((item: any) => `<span style="left:${item.transform[4]}px; top:${item.transform[5]}px;">${item.str}</span>`)
+        .join('');
+    })
+  );
+
+  // Convert text content to HTML
+  const html: string = htmlPages.join('<br>');
+
+  return html;
+}
+
+// Usage
+const pdfPath = 'path/to/input.pdf';
+convertPDFToHTML(pdfPath)
+  .then(html => {
+    // HTML conversion completed
+    console.log(html);
+    // Do something with the HTML
+  })
+  .catch(error => {
+    console.error('Error converting PDF to HTML:', error);
+  });
