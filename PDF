@@ -1,0 +1,23 @@
+
+npm install pdf2html
+
+import * as pdf2html from 'pdf2html';
+
+function convertPdfToHtml(inputPath: string, outputPath: string): void {
+  pdf2html.convert(inputPath, outputPath, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log('HTML conversion successful.');
+  });
+}
+
+// Specify the input PDF file path
+const inputPdfPath = 'input.pdf';
+
+// Specify the output HTML file path
+const outputHtmlPath = 'output.html';
+
+// Convert PDF to HTML
+convertPdfToHtml(inputPdfPath, outputHtmlPath);
