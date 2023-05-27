@@ -24,3 +24,17 @@ export async function populateBranchAndPrProps(props: { [key: string]: string })
       props["sonar.scanner.skip"] = "true";
     }
   }
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embedded PDF Example</title>
+</head>
+<body>
+  <embed src="path/to/your/pdf.pdf" width="500" height="700" type="application/pdf">
+  <!-- or -->
+  <!-- <iframe src="path/to/your/pdf.pdf" width="500" height="700"></iframe> -->
+</body>
+</html>
