@@ -38,3 +38,17 @@ export async function populateBranchAndPrProps(props: { [key: string]: string })
   <!-- <iframe src="path/to/your/pdf.pdf" width="500" height="700"></iframe> -->
 </body>
 </html>
+
+
+
+
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'SonarQubeConnection'
+    projectKey: 'YourProjectKey'
+    projectName: 'YourProjectName'
+    extraProperties: |
+      sonar.login=$(sonar.login)
+      $(if eq(variables['SomeCondition'], 'true'))sonar.host.url=$(sonar.host.url)$(endif)
+      # Other properties...
+
