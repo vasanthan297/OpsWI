@@ -62,3 +62,7 @@ export async function populateBranchAndPrProps(props: { [key: string]: string })
     extraProperties: |
       ${{ if ne(parameters.SonarLoginParameter, '') }}sonar.login=$(SonarLoginParameter)${{ endif }}
       # Other properties...
+      
+      
+      
+      $[if(ne(parameters.SonarLoginParameter, ''), 'sonar.login=$(SonarLoginParameter)', '')]
