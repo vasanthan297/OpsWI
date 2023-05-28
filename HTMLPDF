@@ -1,0 +1,42 @@
+npm install pdfjs-dist
+
+const fs = require('fs');
+const { PDFDocument } = require('pdfjs-dist');
+
+// Define the paths for the input PDF and output HTML files
+const pdfPath = 'path/to/input.pdf';
+const htmlPath = 'path/to/output.html';
+
+// Read the PDF file
+fs.readFile(pdfPath, async (err, data) => {
+  if (err) {
+    console.error('Error reading PDF file:', err);
+    return;
+  }
+
+  try {
+    // Load the PDF document
+    const pdf = await PDFDocument.load(data);
+
+    // Extract the text from each page
+    let htmlContent = '';
+    for (let i = 0; i < pdf.getPageCount(); i++) {
+      const page = await pdf.getPage(i + 1);
+      const textContent = await page.getTextContent();
+      const textItems = textContent.items;
+      const pageText = textItems.map(item => item.str).join(' ');
+      htmlContent += `<p>${pageText}</p>\n`;
+    }
+
+    // Write the HTML content to the output file
+    fs.writeFile(htmlPath, htmlContent, (err) => {
+      if (err) {
+        console.error('Error writing HTML file:', err);
+        return;
+      }
+      console.log('Conversion successful!');
+    });
+  } catch (err) {
+    console.error('Error loading or processing PDF:', err);
+  }
+});
