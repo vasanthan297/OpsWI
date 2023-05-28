@@ -52,3 +52,13 @@ export async function populateBranchAndPrProps(props: { [key: string]: string })
       $(if eq(variables['SomeCondition'], 'true'))sonar.host.url=$(sonar.host.url)$(endif)
       # Other properties...
 
+
+
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'SonarQubeConnection'
+    projectKey: 'YourProjectKey'
+    projectName: 'YourProjectName'
+    extraProperties: |
+      ${{ if ne(parameters.SonarLoginParameter, '') }}sonar.login=$(SonarLoginParameter)${{ endif }}
+      # Other properties...
