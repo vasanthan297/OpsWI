@@ -7,5 +7,7 @@ https://docs.sonarqube.org/latest/analyzing-source-code/test-coverage/javascript
 
 https://community.sonarsource.com/t/sonarqube-on-azure-devops-ignores-test-execution-data-for-all-files/21531/3
 
+https://stackoverflow.com/questions/57255304/azure-devops-extension-api-sdk-apis-error-when-using-in-pipeline-extension
+
 
 https://github.com/parkhomenko/azure-build-task/blob/master/nodeFiles/index.ts
