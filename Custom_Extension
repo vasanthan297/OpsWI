@@ -1,2 +1,4 @@
 
 https://learn.microsoft.com/en-us/azure/devops/extend/develop/add-build-task?view=azure-devops
+
+https://github.com/microsoft/azure-devops-extension-api/blob/master/src/ExtensionManagement/ExtensionManagementClient.ts#L121
