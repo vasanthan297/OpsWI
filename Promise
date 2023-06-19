@@ -1,0 +1,26 @@
+import request, { Response } from 'request';
+
+async function makeAPICall(): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    request('https://api.example.com/data', (error: any, response: Response, body: any) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(response);
+      }
+    });
+  });
+}
+
+async function doSomething() {
+  try {
+    const response = await makeAPICall();
+    // Handle the successful response
+    console.log(response.body);
+  } catch (error) {
+    // Handle the error
+    console.error(error);
+  }
+}
+
+doSomething();
