@@ -1,0 +1,76 @@
+interface Person {
+  name: string;
+  age: number;
+  email: string;
+}
+
+const generatePersons = (count: number): Person[] => {
+  const persons: Person[] = [];
+
+  for (let i = 1; i <= count; i++) {
+    const person: Person = {
+      name: `Person ${i}`,
+      age: Math.floor(Math.random() * 50) + 20,
+      email: `person${i}@example.com`
+    };
+
+    persons.push(person);
+  }
+
+  return persons;
+};
+
+const numberOfPersons = 5;
+const persons = generatePersons(numberOfPersons);
+const jsonData = JSON.stringify(persons);
+console.log(jsonData);
+
+
+
+
+
+import fs from 'fs';
+
+// Function to generate the JSON file
+function generateJSON(projectName: string, repoName: string, branchName: string): void {
+  const sastArray = [
+    {
+      wiid: 123,
+      riskid: 5433,
+      title: 'this is the title',
+      severity: 'Critical'
+    },
+    {
+      wiid: 123,
+      riskid: 5433,
+      title: 'this is the title',
+      severity: 'Critical'
+    }
+  ];
+
+  const data = {
+    security: {
+      project: projectName,
+      repo: repoName,
+      branch: branchName,
+      status: {
+        sast: sastArray
+      }
+    }
+  };
+
+  // Convert data to JSON string
+  const jsonString = JSON.stringify(data, null, 2);
+
+  // Write the JSON string to a file
+  fs.writeFile('output.json', jsonString, (err) => {
+    if (err) {
+      console.error('Error writing JSON file:', err);
+    } else {
+      console.log('JSON file generated successfully.');
+    }
+  });
+}
+
+// Call the function with desired values
+generateJSON('project_name', 'repo_name', 'branch_name');
