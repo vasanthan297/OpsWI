@@ -30,6 +30,65 @@ function parseJSONFile(filePath: string): void {
   }
 }
 
+
+
+==================================================================================================================================
+
+
+
+
+
+import { readFileSync } from 'fs';
+
+interface Coordinate {
+  aid: string;
+  groupId: string;
+  version: string;
+}
+
+interface Alert {
+  trigger: {
+    compo: {
+      coordinate: Coordinate;
+    }[];
+  };
+}
+
+interface PolicyEvaluation {
+  alerts: Alert[];
+}
+
+const jsonFilePath = 'path/to/your/json/file.json';
+
+try {
+  const fileContents = readFileSync(jsonFilePath, 'utf-8');
+  const jsonData = JSON.parse(fileContents);
+
+  const groupIdVersions: { groupId: string; version: string }[] = [];
+
+  if (jsonData.policyeveluation && jsonData.policyeveluation.alerts) {
+    const alerts: Alert[] = jsonData.policyeveluation.alerts;
+
+    for (const alert of alerts) {
+      if (alert.trigger && alert.trigger.compo) {
+        const compoCoordinates = alert.trigger.compo;
+
+        for (const coordinate of compoCoordinates) {
+          if (coordinate.coordinate && coordinate.coordinate.groupId && coordinate.coordinate.version) {
+            const { groupId, version } = coordinate.coordinate;
+            groupIdVersions.push({ groupId, version });
+          }
+        }
+      }
+    }
+  }
+
+  console.log(groupIdVersions);
+} catch (error) {
+  console.error('Error reading or parsing the JSON file:', error);
+}
+
+
 // Usage
 const filePath = '/path/to/file.json';
 parseJSONFile(filePath);
