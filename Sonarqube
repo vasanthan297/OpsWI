@@ -13,3 +13,24 @@ https://stackoverflow.com/questions/57255304/azure-devops-extension-api-sdk-apis
 https://github.com/parkhomenko/azure-build-task/blob/master/nodeFiles/index.ts
 
 https://stackoverflow.com/questions/74429055/gitlab-ci-quality-gate-check-timeout-exceeded
+
+
+
+
+
+import fs from 'fs';
+
+function parseJSONFile(filePath: string): void {
+  try {
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const jsonData = JSON.parse(fileContent);
+    console.log(jsonData);
+  } catch (error) {
+    console.error('Error parsing JSON file:', error);
+  }
+}
+
+// Usage
+const filePath = '/path/to/file.json';
+parseJSONFile(filePath);
+
