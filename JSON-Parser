@@ -1,0 +1,67 @@
+import * as fs from 'fs';
+
+interface ComponentCoordinate {
+  aid: string;
+  groupId: string;
+  version: string;
+}
+
+interface ComponentIdentifie {
+  format: string;
+  coordinate: ComponentCoordinate;
+  hash: string;
+  constraintFacts: {
+    constraintId: string;
+    constraintName: string;
+    conditionFacts: {
+      conditionId: string;
+      condIndex: number;
+      reference: {
+        value: string;
+      };
+    }[];
+  }[];
+}
+
+interface PolicyEvaluation {
+  alerts: {
+    trigger: {
+      componentFacts: ("componentIdentifie" & ComponentIdentifie)[];
+    };
+  }[];
+}
+
+const parseGroupIdsAndVersions = (data: PolicyEvaluation) => {
+  const groupIds: string[] = [];
+  const versions: string[] = [];
+
+  for (const alert of data.alerts) {
+    for (const componentFact of alert.trigger.componentFacts) {
+      const groupId = componentFact.componentIdentifie.coordinate.groupId;
+      const version = componentFact.componentIdentifie.coordinate.version;
+      groupIds.push(groupId);
+      versions.push(version);
+    }
+  }
+
+  return { groupIds, versions };
+};
+
+// Read the JSON file
+const filePath = 'path/to/your/file.json';
+
+fs.readFile(filePath, 'utf8', (err, fileData) => {
+  if (err) {
+    console.error('Error reading JSON file:', err);
+    return;
+  }
+
+  try {
+    const jsonData: PolicyEvaluation = JSON.parse(fileData);
+    const { groupIds, versions } = parseGroupIdsAndVersions(jsonData);
+    console.log("Group IDs:", groupIds);
+    console.log("Versions:", versions);
+  } catch (parseError) {
+    console.error('Error parsing JSON:', parseError);
+  }
+});
