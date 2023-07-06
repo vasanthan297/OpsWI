@@ -65,3 +65,55 @@ fs.readFile(filePath, 'utf8', (err, fileData) => {
     console.error('Error parsing JSON:', parseError);
   }
 });
+
+=========================================================================================================================================
+
+
+
+
+import * as fs from 'fs';
+
+const findGroupIdsAndVersions = (data: any): { groupIds: string[], versions: string[] } => {
+  const groupIds: string[] = [];
+  const versions: string[] = [];
+
+  const traverse = (obj: any) => {
+    if (typeof obj === 'object' && obj !== null) {
+      if ('groupId' in obj && 'version' in obj) {
+        groupIds.push(obj.groupId);
+        versions.push(obj.version);
+      } else {
+        for (const key in obj) {
+          traverse(obj[key]);
+        }
+      }
+    }
+  };
+
+  traverse(data);
+
+  return { groupIds, versions };
+};
+
+// Read the JSON file
+const filePath = 'path/to/your/file.json';
+
+fs.readFile(filePath, 'utf8', (err, fileData) => {
+  if (err) {
+    console.error('Error reading JSON file:', err);
+    return;
+  }
+
+  try {
+    const jsonData = JSON.parse(fileData);
+    const { groupIds, versions } = findGroupIdsAndVersions(jsonData);
+    console.log("Group IDs:", groupIds);
+    console.log("Versions:", versions);
+  } catch (parseError) {
+    console.error('Error parsing JSON:', parseError);
+  }
+});
+
+
+
+
