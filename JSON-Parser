@@ -115,5 +115,11 @@ fs.readFile(filePath, 'utf8', (err, fileData) => {
 });
 
 
+#!/bin/bash
+
+str="Hello World! This is a string with spaces."
+result=$(echo "$str" | tr -d ' ')
+
+echo "$result"
 
 
