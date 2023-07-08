@@ -1,0 +1,50 @@
+import * as azdev from 'azure-devops-node-api';
+
+async function getWorkItemStatus(): Promise<void> {
+  try {
+    // Your Azure DevOps organization URL
+    const orgUrl = 'https://dev.azure.com/yourorganization';
+
+    // Personal Access Token (PAT) with appropriate permissions
+    const token = 'YOUR_PERSONAL_ACCESS_TOKEN';
+
+    // Create a connection to Azure DevOps
+    const authHandler = azdev.getPersonalAccessTokenHandler(token);
+    const connection = new azdev.WebApi(orgUrl, authHandler);
+
+    // Set the Wiql query to retrieve work item status
+    const wiqlQuery = `
+      SELECT [System.Id], [System.Title], [System.State]
+      FROM WorkItems
+      WHERE [System.TeamProject] = @project
+      AND [System.State] <> ''
+      ORDER BY [System.CreatedDate] DESC`;
+
+    // Get the work item tracking client
+    const workItemTrackingApi = await connection.getWorkItemTrackingApi();
+
+    // Execute the Wiql query
+    const queryResult = await workItemTrackingApi.queryByWiql({ query: wiqlQuery });
+
+    if (queryResult && queryResult.workItems) {
+      const workItemIds = queryResult.workItems.map((wi) => wi.id);
+
+      // Get work item details for each ID
+      const workItems = await workItemTrackingApi.getWorkItems(workItemIds, ['System.Id', 'System.Title', 'System.State']);
+
+      if (workItems && workItems.length > 0) {
+        workItems.forEach((workItem) => {
+          console.log(`Work Item ${workItem.id}: ${workItem.fields['System.Title']} - Status: ${workItem.fields['System.State']}`);
+        });
+      } else {
+        console.log('No work items found.');
+      }
+    } else {
+      console.log('Query result is empty.');
+    }
+  } catch (err) {
+    console.error('An error occurred:', err);
+  }
+}
+
+getWorkItemStatus();
