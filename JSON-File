@@ -29,6 +29,12 @@ console.log(jsonData);
 
 
 
+
+
+
+
+
+
 import fs from 'fs';
 
 // Function to generate the JSON file
@@ -74,3 +80,52 @@ function generateJSON(projectName: string, repoName: string, branchName: string)
 
 // Call the function with desired values
 generateJSON('project_name', 'repo_name', 'branch_name');
+
+
+
+
+
+
+
+
+======================================================================================================
+
+import * as fs from 'fs';
+
+const filePath = 'path/to/your/file.json';
+const fileContent = fs.readFileSync(filePath, 'utf-8');
+const jsonContent = JSON.parse(fileContent);
+
+// Create a new array with the desired values
+const newOssArray = [
+  { wiid: "new-value-1" },
+  { wiid: "new-value-2" },
+  // Add more values if needed
+];
+
+// Assign the new array to the oss property
+jsonContent.security.status.oss = newOssArray;
+
+// Save the modified object back to the JSON file
+const updatedContent = JSON.stringify(jsonContent, null, 2);
+fs.writeFileSync(filePath, updatedContent, 'utf-8');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
