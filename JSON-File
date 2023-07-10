@@ -118,6 +118,37 @@ fs.writeFileSync(filePath, updatedContent, 'utf-8');
 
 
 
+import * as fs from 'fs';
+
+const filePath = 'path/to/your/file.json';
+
+if (!fs.existsSync(filePath)) {
+  // File does not exist, create it
+  const initialData = {
+    security: {
+      project: "secops",
+      repo: "90001-api2cloud",
+      branch: "main",
+      status: {
+        sast: [],
+        oss: []
+      }
+    }
+  };
+
+  fs.writeFileSync(filePath, JSON.stringify(initialData, null, 2), 'utf-8');
+}
+
+// Read the file content
+const fileContent = fs.readFileSync(filePath, 'utf-8');
+const jsonContent = JSON.parse(fileContent);
+
+// Perform operations on the JSON content
+// ...
+
+// Save the modified object back to the JSON file
+const updatedContent = JSON.stringify(jsonContent, null, 2);
+fs.writeFileSync(filePath, updatedContent, 'utf-8');
 
 
 
