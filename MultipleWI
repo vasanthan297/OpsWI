@@ -1,0 +1,38 @@
+import * as azdev from 'azure-devops-node-api';
+
+async function createWorkItemsInBulk() {
+  const orgUrl = 'https://dev.azure.com/YourOrganizationName';
+  const token = 'YourPersonalAccessToken';
+
+  // Create a connection to Azure DevOps
+  const authHandler = azdev.getPersonalAccessTokenHandler(token);
+  const connection = new azdev.WebApi(orgUrl, authHandler);
+
+  try {
+    const workItemTrackingApi = await connection.getWorkItemTrackingApi();
+
+    // Define an array of work item payloads
+    const workItems = [
+      {
+        op: 'add',
+        path: '/fields/System.Title',
+        value: 'Work Item 1',
+      },
+      {
+        op: 'add',
+        path: '/fields/System.Description',
+        value: 'This is work item 1.',
+      },
+      // Add more work item payloads as needed
+    ];
+
+    // Create the work items
+    const createdWorkItems = await workItemTrackingApi.createWorkItems(workItems, 'YourProjectName', 'YourWorkItemTypeName');
+    console.log('Work items created successfully:', createdWorkItems.map((wi) => wi.id));
+  } catch (err) {
+    console.error('Error creating work items:', err);
+  }
+}
+
+// Call the function to create work items in bulk
+createWorkItemsInBulk();
