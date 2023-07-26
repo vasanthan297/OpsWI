@@ -1,2 +1,17 @@
 [allowlist]
 regexes = ["password': '\\$\\[\\[{ 51594_client_adm_pass }\\]\\]'"]
+
+
+
+
+#!/bin/bash
+
+# Assuming you have the full reference in a variable
+full_ref="refs/heads/branch_name"
+
+# Remove "refs/heads/" from the beginning of the string
+branch_name="${full_ref#refs/heads/}"
+
+# Print the extracted branch name
+echo "$branch_name"
+
