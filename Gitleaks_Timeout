@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Define your function
+my_function() {
+    # Your function logic here
+    sleep 3600  # Simulating a function that takes 1 hour (3600 seconds)
+}
+
+# Call the function with a timeout of 5 minutes
+timeout 5m my_function
+
+
+
