@@ -6,8 +6,19 @@ my_function() {
     sleep 3600  # Simulating a function that takes 1 hour (3600 seconds)
 }
 
-# Call the function with a timeout of 5 minutes
-timeout 5m my_function
+# Set the timeout in seconds
+timeout_seconds=300
 
+# Call the function with a timeout
+timeout "${timeout_seconds}s" my_function
+
+# Check the exit status of the timeout command
+exit_status=$?
+
+if [ $exit_status -eq 124 ]; then
+    echo "Function timed out after ${timeout_seconds} seconds."
+else
+    echo "Function completed within ${timeout_seconds} seconds."
+fi
 
 
