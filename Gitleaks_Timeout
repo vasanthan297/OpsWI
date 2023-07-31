@@ -22,3 +22,14 @@ else
 fi
 
 
+
+timeout 10s bash <<EOT
+function echoFooBar {
+  echo foo
+}
+
+echoFooBar
+sleep 20
+EOT
+
+
