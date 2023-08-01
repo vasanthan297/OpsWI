@@ -49,3 +49,20 @@ echo "Date 15 days ago: $past_date"
 
 
 
+
+
+
+#!/bin/bash
+
+# Define the path of the folder whose size you want to get
+folder_path="/path/to/your/folder"
+
+# Use the du command to get the size of the folder in bytes
+folder_size_bytes=$(du -s "$folder_path" | awk '{print $1}')
+
+# Convert bytes to megabytes
+folder_size_mb=$(echo "scale=2; $folder_size_bytes / 1024 / 1024" | bc)
+
+echo "Size of the folder $folder_path is: ${folder_size_mb} MB"
+
+
