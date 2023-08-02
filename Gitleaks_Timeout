@@ -66,3 +66,13 @@ folder_size_mb=$(echo "scale=2; $folder_size_bytes / 1024 / 1024" | bc)
 echo "Size of the folder $folder_path is: ${folder_size_mb} MB"
 
 
+
+
+         pullRequestId=$SYSTEM_PULLREQUEST_PULLREQUESTID
+          if [ -n "$pullRequestId" ]; then
+                echo "Valid pull request ID: $pullRequestId"
+          else
+                echo "No valid pull request found."
+               
+          fi
+
